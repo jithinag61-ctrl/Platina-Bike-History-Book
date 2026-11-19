@@ -1,0 +1,507 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#071321">
+<title>PLATINA BIKE HISTORY BOOK</title>
+
+<style>
+:root{
+--bg:#071321;
+--panel:#14283e;
+--gold:#f3c64e;
+--gold2:#ffe49a;
+--white:#fff;
+--muted:#aebbd0;
+}
+*{box-sizing:border-box}
+body{
+margin:0;
+background:linear-gradient(145deg,#071321,#183b59,#030811);
+color:var(--white);
+font-family:Arial,sans-serif;
+}
+header{
+padding:25px 15px;
+text-align:center;
+background:#091827;
+border-bottom:3px solid var(--gold);
+}
+header h1{
+color:var(--gold);
+font-size:23px;
+margin:0;
+}
+header p{color:#c5d3e2}
+.bike{
+font-size:65px;
+margin:10px;
+}
+nav{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:6px;
+padding:10px;
+background:#091827;
+position:sticky;
+top:0;
+}
+nav button{
+padding:11px 3px;
+border-radius:8px;
+border:1px solid #9a782c;
+background:#18314b;
+color:var(--gold);
+font-weight:bold;
+}
+nav button.active{
+background:var(--gold);
+color:#111;
+}
+main{padding:12px;max-width:700px;margin:auto}
+.page{display:none}
+.page.active{display:block}
+.card{
+background:var(--panel);
+padding:15px;
+border:1px solid #a17a25;
+border-radius:13px;
+margin-bottom:13px;
+}
+h2{color:var(--gold);font-size:18px}
+label{
+display:block;
+font-size:13px;
+margin-top:12px;
+color:var(--gold2);
+}
+input,select,textarea{
+width:100%;
+padding:12px;
+margin-top:5px;
+border-radius:8px;
+border:1px solid #62758b;
+background:#071321;
+color:white;
+font-size:15px;
+}
+textarea{min-height:65px}
+.btn{
+background:linear-gradient(#ffe49a,#e3a900);
+color:#111;
+border:0;
+border-radius:9px;
+padding:12px;
+font-weight:bold;
+margin-top:12px;
+width:100%;
+}
+.secondary{
+background:#29445f;
+color:white;
+border:1px solid #8297ad;
+}
+.record{
+background:#0a1929;
+border:1px solid #53677e;
+padding:12px;
+margin:8px 0;
+border-radius:9px;
+}
+.record b{color:var(--gold)}
+.small{font-size:12px;color:var(--muted)}
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="bike">🏍️</div>
+<h1>PLATINA BIKE<br>HISTORY BOOK</h1>
+<p>MAINTAIN • RECORD • REMIND</p>
+</header>
+
+<nav>
+<button class="active" onclick="show('home',this)">Home</button>
+<button onclick="show('bike',this)">Bike Details</button>
+<button onclick="show('history',this)">History</button>
+<button onclick="show('reminder',this)">Reminder</button>
+<button onclick="show('electric',this)">Electric</button>
+<button onclick="show('mechanical',this)">Mechanical</button>
+<button onclick="show('extra',this)">Extra Pages</button>
+<button onclick="show('backup',this)">Backup</button>
+</nav>
+
+<main>
+
+<section id="home" class="page active">
+<div class="card">
+<h2>🏍️ My Platina Bike</h2>
+<p>Welcome to your Bike History Book.</p>
+<p>Current KM: <b id="currentKM">0</b></p>
+<p>Total Records: <b id="totalRecords">0</b></p>
+<button class="btn" onclick="show('history')">ADD NEW RECORD</button>
+</div>
+<div class="card">
+<h2>Upcoming Reminders</h2>
+<div id="homeReminder">No reminders</div>
+</div>
+</section>
+
+<section id="bike" class="page">
+<div class="card">
+<h2>Bike & RC Book Details</h2>
+
+<label>Bike Model</label>
+<input id="model" placeholder="Platina 100">
+
+<label>Registration Number</label>
+<input id="reg">
+
+<label>Purchase Date</label>
+<input id="purchase" type="date">
+
+<label>Purchase Amount</label>
+<input id="price" type="number">
+
+<label>Chassis / Body Number</label>
+<input id="chassis">
+
+<label>Engine Number</label>
+<input id="engine">
+
+<label>Chassis Colour</label>
+<input id="colour">
+
+<label>RC Owner Name</label>
+<input id="owner">
+
+<label>Insurance Number</label>
+<input id="insurance">
+
+<label>RC Notes</label>
+<textarea id="rcnotes"></textarea>
+
+<button class="btn" onclick="saveBike()">SAVE BIKE DETAILS</button>
+</div>
+</section>
+
+<section id="history" class="page">
+<div class="card">
+<h2>Service & Purchase History</h2>
+
+<label>Record Type</label>
+<select id="type">
+<option>Purchase Items</option>
+<option>Oil Change</option>
+<option>Engine Work</option>
+<option>General Service</option>
+<option>Spare Parts</option>
+<option>Tyre Change</option>
+<option>Battery Change</option>
+<option>Other Repair</option>
+</select>
+
+<label>Date</label>
+<input type="date" id="date">
+
+<label>Current KM</label>
+<input type="number" id="km">
+
+<label>Amount ₹</label>
+<input type="number" id="amount">
+
+<label>Item / Work Details</label>
+<input id="details">
+
+<label>Notes</label>
+<textarea id="notes"></textarea>
+
+<button class="btn" onclick="addHistory()">SAVE RECORD</button>
+</div>
+<div class="card">
+<h2>History Records</h2>
+<div id="records"></div>
+</div>
+</section>
+
+<section id="reminder" class="page">
+<div class="card">
+<h2>Service & Document Reminders</h2>
+
+<label>Reminder Type</label>
+<select id="rtype">
+<option>Service Reminder</option>
+<option>Oil Change</option>
+<option>Test Date</option>
+<option>Pollution PUC Date</option>
+<option>Insurance Expiry</option>
+</select>
+
+<label>Due Date</label>
+<input type="date" id="rdate">
+
+<label>Due KM</label>
+<input type="number" id="rkm">
+
+<label>Notes</label>
+<input id="rnote">
+
+<button class="btn" onclick="addReminder()">SAVE REMINDER</button>
+</div>
+<div class="card">
+<h2>Reminder List</h2>
+<div id="reminders"></div>
+</div>
+</section>
+
+<section id="electric" class="page">
+<div class="card">
+<h2>Electric Work Sheet</h2>
+<div id="electricChecks"></div>
+<label>Electric Work Details</label>
+<textarea id="electricNotes"></textarea>
+<button class="btn" onclick="saveWork('Electric Work','electricNotes','electricChecks')">SAVE ELECTRIC WORK</button>
+</div>
+</section>
+
+<section id="mechanical" class="page">
+<div class="card">
+<h2>Mechanical Work Sheet</h2>
+<div id="mechanicalChecks"></div>
+<label>Mechanical Work Details</label>
+<textarea id="mechanicalNotes"></textarea>
+<button class="btn" onclick="saveWork('Mechanical Work','mechanicalNotes','mechanicalChecks')">SAVE MECHANICAL WORK</button>
+</div>
+</section>
+
+<section id="extra" class="page">
+<div class="card">
+<h2>Extra Page 1 - Spare Parts</h2>
+<p>Spare parts purchase and replacement records.</p>
+<button class="btn" onclick="show('history')">OPEN HISTORY</button>
+</div>
+<div class="card">
+<h2>Extra Page 2 - Tyre & Battery</h2>
+<p>Tyre and battery change details.</p>
+<button class="btn" onclick="show('history')">OPEN HISTORY</button>
+</div>
+<div class="card">
+<h2>Extra Page 3 - Expenses</h2>
+<p>Total Expenses: ₹<b id="expenses">0</b></p>
+</div>
+<div class="card">
+<h2>Extra Page 4 - Documents</h2>
+<input type="file" accept="image/*">
+</div>
+<div class="card">
+<h2>Extra Page 5 - Reports</h2>
+<button class="btn" onclick="window.print()">PRINT / PDF</button>
+</div>
+</section>
+
+<section id="backup" class="page">
+<div class="card">
+<h2>Backup & Restore</h2>
+<button class="btn" onclick="backup()">DOWNLOAD BACKUP</button>
+<label>Restore Backup File</label>
+<input type="file" id="restore" accept=".json">
+<button class="btn secondary" onclick="restoreBackup()">RESTORE DATA</button>
+</div>
+</section>
+
+</main>
+
+<script>
+const KEY="PLATINA_BOOK_DATA";
+let db={bike:{},history:[],reminders:[]};
+
+function load(){
+try{
+let d=JSON.parse(localStorage.getItem(KEY));
+if(d)db=d;
+}catch(e){}
+fillBike();
+render();
+}
+
+function save(){
+localStorage.setItem(KEY,JSON.stringify(db));
+render();
+}
+
+function show(id,btn){
+document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+document.getElementById(id).classList.add("active");
+document.querySelectorAll("nav button").forEach(b=>b.classList.remove("active"));
+if(btn)btn.classList.add("active");
+window.scrollTo(0,0);
+}
+
+const bikeFields=["model","reg","purchase","price","chassis","engine","colour","owner","insurance","rcnotes"];
+
+function saveBike(){
+bikeFields.forEach(id=>db.bike[id]=document.getElementById(id).value);
+save();
+alert("Bike details saved!");
+}
+
+function fillBike(){
+bikeFields.forEach(id=>{
+document.getElementById(id).value=db.bike[id]||"";
+});
+}
+
+function addHistory(){
+let title=document.getElementById("details").value;
+let date=document.getElementById("date").value;
+if(!title||!date){alert("Enter date and details");return;}
+
+db.history.unshift({
+id:Date.now(),
+type:document.getElementById("type").value,
+date,
+km:Number(document.getElementById("km").value)||0,
+amount:Number(document.getElementById("amount").value)||0,
+title,
+notes:document.getElementById("notes").value
+});
+
+["details","date","km","amount","notes"].forEach(id=>document.getElementById(id).value="");
+save();
+alert("History saved!");
+}
+
+function addReminder(){
+let date=document.getElementById("rdate").value;
+let km=Number(document.getElementById("rkm").value)||0;
+if(!date&&!km){alert("Enter due date or KM");return;}
+
+db.reminders.push({
+id:Date.now(),
+type:document.getElementById("rtype").value,
+date,
+km,
+note:document.getElementById("rnote").value
+});
+save();
+alert("Reminder saved!");
+}
+
+function delRecord(id){
+if(confirm("Delete record?")){
+db.history=db.history.filter(x=>x.id!==id);
+save();
+}
+}
+
+function delReminder(id){
+if(confirm("Delete reminder?")){
+db.reminders=db.reminders.filter(x=>x.id!==id);
+save();
+}
+}
+
+function render(){
+let list=document.getElementById("records");
+list.innerHTML="";
+db.history.forEach(x=>{
+let d=document.createElement("div");
+d.className="record";
+d.innerHTML="<b>"+safe(x.type)+"</b><br>"+safe(x.title)+
+"<p class='small'>"+safe(x.date)+" | "+x.km+" KM | ₹"+x.amount+"</p>";
+let b=document.createElement("button");
+b.className="btn secondary";
+b.textContent="DELETE";
+b.onclick=()=>delRecord(x.id);
+d.appendChild(b);
+list.appendChild(d);
+});
+
+let r=document.getElementById("reminders");
+r.innerHTML="";
+db.reminders.forEach(x=>{
+let d=document.createElement("div");
+d.className="record";
+d.innerHTML="<b>"+safe(x.type)+"</b><br>"+safe(x.date)+" | "+x.km+" KM<br>"+safe(x.note);
+let b=document.createElement("button");
+b.className="btn secondary";
+b.textContent="DELETE";
+b.onclick=()=>delReminder(x.id);
+d.appendChild(b);
+r.appendChild(d);
+});
+
+let kms=db.history.map(x=>x.km).filter(x=>x>0);
+document.getElementById("currentKM").textContent=kms.length?Math.max(...kms):0;
+document.getElementById("totalRecords").textContent=db.history.length;
+document.getElementById("expenses").textContent=db.history.reduce((s,x)=>s+x.amount,0);
+
+document.getElementById("homeReminder").textContent=
+db.reminders.length?db.reminders.map(x=>x.type+" - "+(x.date||x.km+" KM")).join(" | "):"No reminders";
+}
+
+function safe(s){
+return String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+
+function makeChecks(id,items){
+document.getElementById(id).innerHTML=items.map((x,i)=>
+"<label><input type='checkbox' style='width:auto'> "+x+"</label>"
+).join("");
+}
+
+function saveWork(type,noteId,checksId){
+let notes=document.getElementById(noteId).value;
+let checked=[...document.getElementById(checksId).querySelectorAll("input:checked")]
+.map(x=>x.parentElement.textContent.trim()).join(", ");
+db.history.unshift({
+id:Date.now(),type,date:new Date().toISOString().slice(0,10),
+km:0,amount:0,title:checked||"Work sheet",notes
+});
+save();
+alert("Work sheet saved!");
+}
+
+function backup(){
+let blob=new Blob([JSON.stringify(db,null,2)],{type:"application/json"});
+let a=document.createElement("a");
+a.href=URL.createObjectURL(blob);
+a.download="Platina_Bike_Backup.json";
+a.click();
+URL.revokeObjectURL(a.href);
+}
+
+function restoreBackup(){
+let file=document.getElementById("restore").files[0];
+if(!file){alert("Select backup file");return;}
+let reader=new FileReader();
+reader.onload=()=>{
+try{
+let data=JSON.parse(reader.result);
+if(!data.bike||!Array.isArray(data.history)||!Array.isArray(data.reminders))throw Error();
+db=data;
+save();
+fillBike();
+alert("Backup restored!");
+}catch(e){alert("Invalid backup file");}
+};
+reader.readAsText(file);
+}
+
+makeChecks("electricChecks",[
+"Battery","Headlight","Tail light","Indicator",
+"Horn","Starter","Wiring"
+]);
+
+makeChecks("mechanicalChecks",[
+"Engine Oil","Brake","Chain","Tyre",
+"Clutch","Suspension","Air Filter"
+]);
+
+load();
+</script>
+</body>
+</html>
